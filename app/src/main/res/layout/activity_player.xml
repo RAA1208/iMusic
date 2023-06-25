@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".PlayerActivity"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/back_btn_PA"
+            android:src="@drawable/back_icon"
+            android:background="@android:color/transparent"
+            android:layout_weight="1"
+            android:contentDescription="@string/back_button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/worldOfMusic"
+            android:text="@string/world_of_music"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:layout_weight="2"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/fav_border"
+            android:src="@drawable/favorite_border_icon"
+            android:background="@android:color/transparent"
+            android:layout_weight="1"
+            android:contentDescription="@string/add_song_to_favorite_folder" />
+
+
+
+
+    </LinearLayout>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:id="@+id/songImg"
+        android:src="@mipmap/music_icon"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        app:shapeAppearanceOverlay="@style/curved_shape"
+        app:strokeColor="@color/dark_yellow"
+        app:strokeWidth="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/songName"
+        android:text="@string/song_name"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="60dp">
+
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/previous_btn"
+            android:src="@drawable/previous_icon"
+            android:background="@android:color/transparent"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/load_previous_song" />
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/playPause_btn"
+            app:srcCompat="@drawable/play_icon"
+            android:background="@android:color/transparent"
+            android:layout_weight="2"
+            android:contentDescription="@string/play_pause_song" />
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/next_btn"
+            android:src="@drawable/next_icon"
+            android:background="@android:color/transparent"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:contentDescription="@string/loadNext_song" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/tvSeekbarStart"
+            android:text= "@string/song_time"
+            android:textColor="@color/white"
+            android:gravity="bottom"/>
+
+
+         <androidx.appcompat.widget.AppCompatSeekBar
+             android:id="@+id/seekbar"
+             android:layout_width="300dp"
+             android:layout_height="20dp"
+             android:layout_marginTop="20dp"
+             android:thumbTint="@color/dark_red"
+             android:progressTint="@color/dark_yellow"
+             android:progressBackgroundTint="@color/dark_yellow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/tvSeekbarEnd"
+            android:text= "@string/song_time"
+            android:textColor="@color/white"
+            android:gravity="bottom"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/repeat_btn"
+            android:src="@drawable/repeat_icon"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/repeat_song" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/share_btn"
+            android:src="@drawable/share_icon"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/share_song" />
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
