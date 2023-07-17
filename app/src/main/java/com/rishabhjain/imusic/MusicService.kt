@@ -1,4 +1,4 @@
-package com.example.imusic
+package com.rishabhjain.imusic
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
@@ -14,6 +14,7 @@ import android.os.Looper
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+
 
 class MusicService : Service() {
     private var myBinder = MyBinder()

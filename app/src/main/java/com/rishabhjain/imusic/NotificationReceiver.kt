@@ -1,4 +1,4 @@
-package com.example.imusic
+package com.rishabhjain.imusic
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -15,7 +15,7 @@ class NotificationReceiver: BroadcastReceiver() {
         when(intent?.action){
             Application.PREVIOUS -> nextPreviousBtn(increment = false, context = context!!)
             Application.PLAY -> if (PlayerActivity.musicService!!.mediaPlayer!!.isPlaying) pauseMusic() else playMusic()
-            Application.NEXT-> nextPreviousBtn(increment = true, context = context!!)
+            Application.NEXT -> nextPreviousBtn(increment = true, context = context!!)
             Application.EXIT -> {
                 PlayerActivity.musicService!!.stopForeground(true)
                 PlayerActivity.musicService!!.mediaPlayer!!.release()
@@ -53,6 +53,11 @@ class NotificationReceiver: BroadcastReceiver() {
             .apply(RequestOptions().placeholder(R.mipmap.music_icon)).centerCrop()
             .into(PlayerActivity.binding.songImg)
         playMusic()
+        PlayerActivity.findex = favChecker(PlayerActivity.musilistPA[PlayerActivity.songPosition].id)
+        if (PlayerActivity.isfavorite)
+            PlayerActivity.binding.favBtn.setImageResource(R.drawable.favorite_icon)
+        else
+            PlayerActivity.binding.favBtn.setImageResource(R.drawable.favorite_border_icon)
 
     }
 

@@ -1,11 +1,10 @@
-package com.example.imusic
+package com.rishabhjain.imusic
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
 import android.media.MediaPlayer
-import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.imusic.databinding.ActivityPlayerBinding
+import com.rishabhjain.imusic.databinding.ActivityPlayerBinding
 
 class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCompletionListener{
 
@@ -25,8 +24,11 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
        lateinit var musilistPA: ArrayList<Music>
         var songPosition: Int = 0
         var musicService: MusicService? = null
+        @SuppressLint("StaticFieldLeak")
         lateinit var binding: ActivityPlayerBinding
         var repeat: Boolean = false
+        var isfavorite: Boolean = false
+        var findex = -1
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -42,6 +44,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
 
         iniializeMediaPlayer()
         playPauseButton()
+        
+        binding.songName.setSelected(true)
 
         binding.backBtnPA.setOnClickListener { finish() }
         binding.nextBtn.setOnClickListener { nextPreviousBtn(increment = true) }
@@ -76,6 +80,20 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
             startActivity(chooser)
         }
 
+        binding.favBtn.setOnClickListener {
+            if (isfavorite){
+                isfavorite = false
+                binding.favBtn.setImageResource(R.drawable.favorite_border_icon)
+                FavoriteActivity.favSongslist.removeAt(findex)
+                Toast.makeText(this, "Song removed from favorites", Toast.LENGTH_SHORT).show()
+            }else{
+                isfavorite = true
+                binding.favBtn.setImageResource(R.drawable.favorite_icon)
+                FavoriteActivity.favSongslist.add(musilistPA[songPosition])
+                Toast.makeText(this, "Song added to favorites", Toast.LENGTH_SHORT).show()
+            }
+        }
+
 
 
 
@@ -88,21 +106,33 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
             "RVAdapter" -> {
                 musilistPA = ArrayList()
                 musilistPA.addAll(MainActivity.mainMusiclist)
-                setSongImage()
+                setSongImageandLayout()
 
             }
             "MainActivitySearch" -> {
                 musilistPA = ArrayList()
                 musilistPA.addAll(MainActivity.musicListSearch)
-                setSongImage()
+                setSongImageandLayout()
 
             }
             "MainActivity" -> {
                 musilistPA = ArrayList()
                 musilistPA.addAll(MainActivity.mainMusiclist)
                 musilistPA.shuffle()
-                setSongImage()
+                setSongImageandLayout()
 
+            }
+            "FavoriteAdapter" ->{
+                musilistPA = ArrayList()
+                musilistPA.addAll(FavoriteActivity.favSongslist)
+                setSongImageandLayout()
+
+            }
+            "FavoriteActivity" ->{
+                musilistPA = ArrayList()
+                musilistPA.addAll(FavoriteActivity.favSongslist)
+                musilistPA.shuffle()
+                setSongImageandLayout()
 
             }
         }
@@ -129,11 +159,18 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
 
     }
 
-    private fun setSongImage() {
+    private fun setSongImageandLayout() {
+        findex = favChecker(musilistPA[songPosition].id)
         Glide.with(this)
             .load(musilistPA[songPosition].imgUri)
             .apply(RequestOptions().placeholder(R.mipmap.music_icon)).centerCrop()
             .into(binding.songImg)
+
+        if (isfavorite)
+            binding.favBtn.setImageResource(R.drawable.favorite_icon)
+        else
+            binding.favBtn.setImageResource(R.drawable.favorite_border_icon)
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -169,7 +206,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
                     songPosition = 0
 
                 }
-                setSongImage()
+                setSongImageandLayout()
                 creatingMediaPlayer()
 
             } else {
@@ -180,7 +217,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
                     songPosition = musilistPA.size - 1
 
                 }
-                setSongImage()
+                setSongImageandLayout()
                 creatingMediaPlayer()
             }
         }else{

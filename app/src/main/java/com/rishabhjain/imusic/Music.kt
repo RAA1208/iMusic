@@ -1,4 +1,4 @@
-package com.example.imusic
+package com.rishabhjain.imusic
 
 import android.media.MediaMetadataRetriever
 import android.widget.Toast
@@ -6,6 +6,15 @@ import java.util.concurrent.TimeUnit
 
 data class Music(val id: String, val title: String, val album: String, val duration: Long, val artist: String,
                  val path: String, val imgUri: String )
+
+class Playlist{
+    lateinit var name: String
+    lateinit var playlist: ArrayList<Music>
+    lateinit var createdOn: String
+}
+class MusicPlaylist{
+    var ref: ArrayList<Playlist> = ArrayList()
+}
 
     fun formatTimeDuration(duration: Long):String{
         val minutes = TimeUnit.MINUTES.convert(duration, TimeUnit.MILLISECONDS)
@@ -42,4 +51,15 @@ data class Music(val id: String, val title: String, val album: String, val durat
         }
     }
 }
+
+    fun favChecker(id:String): Int{
+        PlayerActivity.isfavorite = false
+        FavoriteActivity.favSongslist.forEachIndexed { index, music ->
+            if (id == music.id){
+                PlayerActivity.isfavorite = true
+                return index
+            }
+        }
+        return -1
+    }
 

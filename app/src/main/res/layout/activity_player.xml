@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".PlayerActivity"
+    tools:context="com.rishabhjain.imusic.PlayerActivity"
     android:layout_gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -36,7 +36,7 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/fav_border"
+            android:id="@+id/fav_btn"
             android:src="@drawable/favorite_border_icon"
             android:background="@android:color/transparent"
             android:layout_weight="1"
@@ -63,6 +63,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/songName"
         android:text="@string/song_name"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
         android:textColor="@color/white"
         android:textSize="22sp"
         android:layout_gravity="center_horizontal"

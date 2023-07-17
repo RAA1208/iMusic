@@ -1,11 +1,8 @@
-package com.example.imusic
+package com.rishabhjain.imusic
 
 import android.app.Application
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 

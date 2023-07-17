@@ -1,4 +1,4 @@
-package com.example.imusic
+package com.rishabhjain.imusic
 
 import org.junit.Test
 

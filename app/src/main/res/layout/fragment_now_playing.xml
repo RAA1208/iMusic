@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".NowPlayingFragment"
+    android:background="@color/dark_red">
+
+     <com.google.android.material.imageview.ShapeableImageView
+         android:id="@+id/nowplaySongimg"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:src="@mipmap/music_icon"
+         app:shapeAppearanceOverlay="@style/curved_shape"/>
+
+    <TextView
+        android:id="@+id/nowplysongname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nowplaying_song_name"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:gravity="center_horizontal"
+        android:layout_toEndOf="@id/nowplaySongimg"
+        android:layout_toStartOf="@id/nowPlayPause"
+        android:layout_marginTop="12dp"/>
+
+   <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:id="@+id/nowPlayPause"
+       app:icon="@drawable/play_icon"
+       android:layout_toStartOf="@id/next_btn"
+       app:iconSize="40dp"
+       app:iconTint="@color/black"
+       android:layout_marginEnd="10dp"
+       android:backgroundTint="@color/dark_red"/>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/next_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/right_icon"
+        android:layout_alignParentEnd="true"
+        android:backgroundTint="@color/dark_red"
+        app:iconTint="@color/black"
+        app:iconSize="40dp"
+        android:contentDescription="@string/nowplaynextbtn" />
+
+</RelativeLayout>

@@ -1,4 +1,4 @@
-package com.example.imusic
+package com.rishabhjain.imusic
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -20,8 +20,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.imusic.databinding.ActivityMainBinding
+import com.rishabhjain.imusic.databinding.ActivityMainBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -119,6 +121,16 @@ class MainActivity : AppCompatActivity() {
         binding.recycyclerView.setItemViewCacheSize(13)
         binding.recycyclerView.layoutManager = LinearLayoutManager(this)
         binding.recycyclerView.adapter = musicAdapter
+
+//        retrieving favorites data using shared preferences
+        FavoriteActivity.favSongslist = ArrayList()
+        val editor = getSharedPreferences("FAVORITES", MODE_PRIVATE)
+        val jsonString =  editor.getString("FavoriteSongs", null)
+        val typeToken = object : TypeToken<ArrayList<Music>>(){}.type
+        if (jsonString != null){
+            val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
+            FavoriteActivity.favSongslist.addAll(data)
+        }
 
 
     }
@@ -240,6 +252,17 @@ class MainActivity : AppCompatActivity() {
             PlayerActivity.musicService = null
             exitProcess(1)
         }
+    }
+
+//    storing favorites data using shared preferences
+    override fun onResume() {
+        super.onResume()
+        val editor = getSharedPreferences("FAVORITES", MODE_PRIVATE).edit()
+        val jsonString = GsonBuilder().create().toJson(FavoriteActivity.favSongslist)
+        editor.putString("FavoriteSongs", jsonString)
+        editor.apply()
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

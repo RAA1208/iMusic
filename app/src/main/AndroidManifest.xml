@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
 
     <application
         android:name=".Application"
@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/splash_screen"
         tools:targetApi="31">
+        <activity
+            android:name=".PlaylistsDetail"
+            android:exported="false" />
         <activity
             android:name=".FavoriteActivity"
             android:exported="false" />
@@ -38,12 +41,14 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MusicService"
-            android:foregroundServiceType="mediaPlayback"
-            android:exported="false"/>
+        <service
+            android:name=".MusicService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
 
-        <receiver android:name=".NotificationReceiver"
-            android:enabled="true"/>
+        <receiver
+            android:name=".NotificationReceiver"
+            android:enabled="true" />
     </application>
 
 </manifest>

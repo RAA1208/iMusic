@@ -30,4 +30,9 @@
     <string name="rv_album_name">Album</string>
     <string name="rv_song_duration">00:00</string>
     <string name="search_view">Search View</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nowplaying_song_name">Song name</string>
+    <string name="nowplaynextbtn">nowPlaynextBtn</string>
+    <string name="playlist_name">Playlist name</string>
 </resources>
