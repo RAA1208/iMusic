@@ -3,6 +3,7 @@ package com.rishabhjain.imusic
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION
@@ -20,10 +21,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.rishabhjain.imusic.databinding.ActivityMainBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.rishabhjain.imusic.databinding.ActivityMainBinding
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -60,9 +61,7 @@ class MainActivity : AppCompatActivity() {
 //      Setting onClick listeners on menu items
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.feedback_btn -> Toast.makeText(this, "Feedback", Toast.LENGTH_SHORT).show()
-                R.id.setting_btn -> Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
-                R.id.about_btn -> Toast.makeText(this, "About", Toast.LENGTH_SHORT).show()
+                R.id.about_btn -> startActivity(Intent(this, AboutActivity::class.java ))
                 R.id.exit_btn -> {
                     val builder = MaterialAlertDialogBuilder(this)
                         .setTitle("Exit")
@@ -80,10 +79,9 @@ class MainActivity : AppCompatActivity() {
                         }
                     val customDialog = builder.create()
                     customDialog.show()
-                    customDialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                        .setBackgroundColor(R.color.dark_red)
-                    customDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                        .setBackgroundColor(R.color.dark_red)
+                    customDialog.window?.setBackgroundDrawableResource(R.color.grey)
+                    customDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK)
+                    customDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK)
 
                 }
 
@@ -130,6 +128,12 @@ class MainActivity : AppCompatActivity() {
         if (jsonString != null){
             val data: ArrayList<Music> = GsonBuilder().create().fromJson(jsonString, typeToken)
             FavoriteActivity.favSongslist.addAll(data)
+        }
+        PlaylistsActivity.musicPlaylist = MusicPlaylist()
+        val jsonStringPlaylist = editor.getString("MusicPlaylist", null)
+        if(jsonStringPlaylist != null){
+            val dataPlaylist: MusicPlaylist = GsonBuilder().create().fromJson(jsonStringPlaylist, MusicPlaylist::class.java)
+            PlaylistsActivity.musicPlaylist = dataPlaylist
         }
 
 
@@ -247,10 +251,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (!PlayerActivity.musicService!!.mediaPlayer!!.isPlaying && PlayerActivity.musicService != null) {
-            PlayerActivity.musicService!!.stopForeground(true)
-            PlayerActivity.musicService!!.mediaPlayer!!.release()
-            PlayerActivity.musicService = null
-            exitProcess(1)
+           exitProcess()
         }
     }
 
@@ -260,7 +261,10 @@ class MainActivity : AppCompatActivity() {
         val editor = getSharedPreferences("FAVORITES", MODE_PRIVATE).edit()
         val jsonString = GsonBuilder().create().toJson(FavoriteActivity.favSongslist)
         editor.putString("FavoriteSongs", jsonString)
-        editor.apply()
+    val jsonStringPlaylist = GsonBuilder().create().toJson(PlaylistsActivity.musicPlaylist)
+    editor.putString("MusicPlaylist", jsonStringPlaylist)
+    editor.apply()
+
 
 
     }

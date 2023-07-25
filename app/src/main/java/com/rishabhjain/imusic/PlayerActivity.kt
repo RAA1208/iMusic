@@ -2,8 +2,10 @@ package com.rishabhjain.imusic
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -29,6 +31,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
         var repeat: Boolean = false
         var isfavorite: Boolean = false
         var findex = -1
+        var nowPlayingId: String = ""
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -38,14 +41,10 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
         setTheme(R.style.SecondaryTheme)
         setContentView(binding.root)
 
-        val intent = Intent(this, MusicService::class.java)
-        bindService(intent, this, BIND_AUTO_CREATE)
-        startService(intent)
-
         iniializeMediaPlayer()
         playPauseButton()
-        
-        binding.songName.setSelected(true)
+
+        binding.songName.isSelected = true
 
         binding.backBtnPA.setOnClickListener { finish() }
         binding.nextBtn.setOnClickListener { nextPreviousBtn(increment = true) }
@@ -104,18 +103,30 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
         songPosition = intent.getIntExtra("index", 0)
         when (intent.getStringExtra("class")) {
             "RVAdapter" -> {
+                val intent = Intent(this, MusicService::class.java)
+                bindService(intent, this, BIND_AUTO_CREATE)
+                startService(intent)
+
                 musilistPA = ArrayList()
                 musilistPA.addAll(MainActivity.mainMusiclist)
                 setSongImageandLayout()
 
             }
             "MainActivitySearch" -> {
+                val intent = Intent(this, MusicService::class.java)
+                bindService(intent, this, BIND_AUTO_CREATE)
+                startService(intent)
+
                 musilistPA = ArrayList()
                 musilistPA.addAll(MainActivity.musicListSearch)
                 setSongImageandLayout()
 
             }
             "MainActivity" -> {
+                val intent = Intent(this, MusicService::class.java)
+                bindService(intent, this, BIND_AUTO_CREATE)
+                startService(intent)
+
                 musilistPA = ArrayList()
                 musilistPA.addAll(MainActivity.mainMusiclist)
                 musilistPA.shuffle()
@@ -123,14 +134,57 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
 
             }
             "FavoriteAdapter" ->{
+                val intent = Intent(this, MusicService::class.java)
+                bindService(intent, this, BIND_AUTO_CREATE)
+                startService(intent)
+
                 musilistPA = ArrayList()
                 musilistPA.addAll(FavoriteActivity.favSongslist)
                 setSongImageandLayout()
 
             }
             "FavoriteActivity" ->{
+                val intent = Intent(this, MusicService::class.java)
+                bindService(intent, this, BIND_AUTO_CREATE)
+                startService(intent)
+
                 musilistPA = ArrayList()
                 musilistPA.addAll(FavoriteActivity.favSongslist)
+                musilistPA.shuffle()
+                setSongImageandLayout()
+
+            }
+            "NowPlaying" ->{
+                binding.tvSeekbarStart.text = formatTimeDuration(musicService!!.mediaPlayer!!.currentPosition.toLong())
+                binding.tvSeekbarEnd.text = formatTimeDuration(musicService!!.mediaPlayer!!.duration.toLong())
+                binding.seekbar.progress = musicService!!.mediaPlayer!!.currentPosition
+                binding.seekbar.max = musicService!!.mediaPlayer!!.duration
+                binding.songName.text = musilistPA[songPosition].title
+                NowPlayingFragment.binding.nowplysongname.text = musilistPA[songPosition].title
+                setSongImageandLayout()
+                if (musicService!!.mediaPlayer!!.isPlaying){
+                    binding.playPauseBtn.setImageResource(R.drawable.pause_icon)
+                }else
+                    binding.playPauseBtn.setImageResource(R.drawable.play_icon)
+
+            }
+            "PlaylistDetailsAdapter" ->{
+                val intent = Intent(this, MusicService::class.java)
+                bindService(intent, this, BIND_AUTO_CREATE)
+                startService(intent)
+
+                musilistPA = ArrayList()
+                musilistPA.addAll(PlaylistsActivity.musicPlaylist.ref[PlaylistsDetail.currentPlaylistPos].playlist)
+                setSongImageandLayout()
+
+            }
+            "PlaylistDetailsShuffle" ->{
+                val intent = Intent(this, MusicService::class.java)
+                bindService(intent, this, BIND_AUTO_CREATE)
+                startService(intent)
+
+                musilistPA = ArrayList()
+                musilistPA.addAll(PlaylistsActivity.musicPlaylist.ref[PlaylistsDetail.currentPlaylistPos].playlist)
                 musilistPA.shuffle()
                 setSongImageandLayout()
 
@@ -155,6 +209,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
         binding.seekbar.progress = 0
         binding.seekbar.max = musicService!!.mediaPlayer!!.duration
         musicService!!.mediaPlayer!!.setOnCompletionListener(this)
+        nowPlayingId = musilistPA[songPosition].id
 
 
     }
@@ -179,6 +234,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
             if (musicService!!.mediaPlayer!!.isPlaying) {
                 binding.playPauseBtn.setImageResource(R.drawable.play_icon)
                 musicService!!.mediaPlayer!!.pause()
+                NowPlayingFragment.binding.nowPlayPause.setIconResource(R.drawable.play_icon)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     musicService!!.showNotification(R.drawable.play_icon)
                 }
@@ -186,6 +242,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
             } else {
                 binding.playPauseBtn.setImageResource(R.drawable.pause_icon)
                 musicService!!.mediaPlayer!!.start()
+                NowPlayingFragment.binding.nowPlayPause.setIconResource(R.drawable.pause_icon)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     musicService!!.showNotification(R.drawable.pause_icon)
                 }
@@ -231,6 +288,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection , MediaPlayer.OnCo
         musicService = binder.currentService()
         creatingMediaPlayer()
         musicService!!.seekbarProgress()
+        musicService!!.audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        musicService!!.audioManager.requestAudioFocus(musicService, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
 
 
     }

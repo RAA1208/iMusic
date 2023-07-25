@@ -15,7 +15,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
 
-class RVAdapter(private val context:Context, private var musicList: ArrayList<Music>): RecyclerView.Adapter<RVAdapter.ViewHolder>() {
+class RVAdapter(private val context:Context, private var musicList: ArrayList<Music>, private val playlistDetails:Boolean = false,
+private val selectionActivity: Boolean = false): RecyclerView.Adapter<RVAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){
         val songImg: ImageView = itemView.findViewById(R.id.songImage)
         val title: TextView = itemView.findViewById(R.id.songName)
@@ -46,12 +47,32 @@ class RVAdapter(private val context:Context, private var musicList: ArrayList<Mu
              .placeholder(R.mipmap.music_icon))
              .into(holder.songImg)
 
-        holder.rootLayout.setOnClickListener {
-           when {
-               MainActivity.search -> setIntent(ref = "MainActivitySearch", pos = position)
-               else -> setIntent(ref = "RVAdapter", pos = position)
+       when{
+           playlistDetails ->{
+               holder.rootLayout.setOnClickListener {
+                   setIntent(ref = "PlaylistDetailsAdapter", pos = position)
+               }
+
            }
-        }
+           selectionActivity ->{
+               holder.rootLayout.setOnClickListener {
+                   if(addSong(musicList[position]))
+                       holder.rootLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_yellow))
+                   else
+                       holder.rootLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.black))
+
+               }
+           }
+           else -> {
+               holder.rootLayout.setOnClickListener {
+                   when {
+                       MainActivity.search -> setIntent(ref = "MainActivitySearch", pos = position)
+                       musicList[position].id == PlayerActivity.nowPlayingId -> setIntent(ref = "NowPlaying", pos = PlayerActivity.songPosition)
+                       else -> setIntent(ref = "RVAdapter", pos = position)
+                   }
+               }
+           }
+       }
 
     }
 
@@ -68,5 +89,22 @@ class RVAdapter(private val context:Context, private var musicList: ArrayList<Mu
         intent.putExtra("class", ref)
         ContextCompat.startActivity(context, intent, null)
 
+    }
+
+    private fun addSong(song: Music): Boolean{
+        PlaylistsActivity.musicPlaylist.ref[PlaylistsDetail.currentPlaylistPos].playlist.forEachIndexed { index, music ->
+            if(song.id == music.id){
+                PlaylistsActivity.musicPlaylist.ref[PlaylistsDetail.currentPlaylistPos].playlist.removeAt(index)
+                return false
+            }
+        }
+        PlaylistsActivity.musicPlaylist.ref[PlaylistsDetail.currentPlaylistPos].playlist.add(song)
+        return true
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    fun refreshPlaylist(){
+        musicList = ArrayList()
+        musicList = PlaylistsActivity.musicPlaylist.ref[PlaylistsDetail.currentPlaylistPos].playlist
+        notifyDataSetChanged()
     }
 }

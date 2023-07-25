@@ -1,7 +1,6 @@
 package com.rishabhjain.imusic
 
 import android.media.MediaMetadataRetriever
-import android.widget.Toast
 import java.util.concurrent.TimeUnit
 
 data class Music(val id: String, val title: String, val album: String, val duration: Long, val artist: String,
@@ -10,7 +9,6 @@ data class Music(val id: String, val title: String, val album: String, val durat
 class Playlist{
     lateinit var name: String
     lateinit var playlist: ArrayList<Music>
-    lateinit var createdOn: String
 }
 class MusicPlaylist{
     var ref: ArrayList<Playlist> = ArrayList()
@@ -51,6 +49,15 @@ class MusicPlaylist{
         }
     }
 }
+
+fun exitProcess(){
+    PlayerActivity.musicService!!.stopForeground(true)
+    PlayerActivity.musicService!!.audioManager.abandonAudioFocus(PlayerActivity.musicService)
+    PlayerActivity.musicService!!.mediaPlayer!!.release()
+    PlayerActivity.musicService = null
+    kotlin.system.exitProcess(1)
+}
+
 
     fun favChecker(id:String): Int{
         PlayerActivity.isfavorite = false

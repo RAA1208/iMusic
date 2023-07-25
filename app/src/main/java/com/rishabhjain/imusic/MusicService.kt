@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
@@ -16,11 +17,12 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 
 
-class MusicService : Service() {
+class MusicService : Service(), AudioManager.OnAudioFocusChangeListener {
     private var myBinder = MyBinder()
     var mediaPlayer: MediaPlayer? = null
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var runnable: Runnable
+    lateinit var audioManager: AudioManager
 
 
     override fun onBind(intent: Intent?): IBinder {
@@ -39,6 +41,9 @@ class MusicService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun showNotification(playPauseBtn: Int) {
+        val intent = Intent(baseContext, MainActivity::class.java)
+        val contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
         val prevIntent =
             Intent(baseContext, NotificationReceiver::class.java).setAction(Application.PREVIOUS)
         val pendingPrevIntent =
@@ -67,6 +72,7 @@ class MusicService : Service() {
         }
 
         val notification = NotificationCompat.Builder(baseContext, Application.CHHANEL_ID)
+            .setContentIntent(contentIntent)
             .setSmallIcon(R.drawable.playlists_icon)
             .setLargeIcon(image)
             .setContentTitle(PlayerActivity.musilistPA[PlayerActivity.songPosition].title)
@@ -101,6 +107,7 @@ class MusicService : Service() {
         PlayerActivity.binding.tvSeekbarEnd.text = formatTimeDuration(mediaPlayer!!.duration.toLong())
         PlayerActivity.binding.seekbar.progress = 0
         PlayerActivity.binding.seekbar.max = mediaPlayer!!.duration
+        PlayerActivity.nowPlayingId = PlayerActivity.musilistPA[PlayerActivity.songPosition].id
 
     }
 
@@ -112,6 +119,26 @@ class MusicService : Service() {
         }
         Handler(Looper.getMainLooper()).postDelayed(runnable, 0)
 
+
+    }
+
+    override fun onAudioFocusChange(focusChange: Int) {
+        if (focusChange <= 0){
+            PlayerActivity.binding.playPauseBtn.setImageResource(R.drawable.play_icon)
+            PlayerActivity.musicService!!.mediaPlayer!!.pause()
+            NowPlayingFragment.binding.nowPlayPause.setIconResource(R.drawable.play_icon)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                PlayerActivity.musicService!!.showNotification(R.drawable.play_icon)
+            }
+
+        }else{
+            PlayerActivity.binding.playPauseBtn.setImageResource(R.drawable.pause_icon)
+            PlayerActivity.musicService!!.mediaPlayer!!.start()
+            NowPlayingFragment.binding.nowPlayPause.setIconResource(R.drawable.pause_icon)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                PlayerActivity.musicService!!.showNotification(R.drawable.pause_icon)
+            }
+        }
 
     }
 }

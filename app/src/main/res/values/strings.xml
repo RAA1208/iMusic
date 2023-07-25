@@ -35,4 +35,15 @@
     <string name="nowplaying_song_name">Song name</string>
     <string name="nowplaynextbtn">nowPlaynextBtn</string>
     <string name="playlist_name">Playlist name</string>
+    <string name="setting_activity_title">Setting</string>
+    <string name="about_activity_title">About</string>
+    <string name="feedback_activity_title">Feedback</string>
+    <string name="topic_feedback">Topic (eg. suggetions, error, etc)</string>
+    <string name="email_feedback">Email Address (Optional)</string>
+    <string name="sent_btn">SENT</string>
+    <string name="add_btn">add</string>
+    <string name="remove_btn_pa">Remove</string>
+    <string name="welcome_to_imusic">Welcome to iMusic - Your Ultimate Music Experience!</string>
+    <string name="listen_and_enjoy">Listen and Enjoy the Rhythm of Life</string>
+    <string name="designed_dev">Designed and Developed by Rishabh Jain</string>
 </resources>

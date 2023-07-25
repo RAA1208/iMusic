@@ -1,5 +1,6 @@
 package com.rishabhjain.imusic
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -11,7 +12,7 @@ import com.rishabhjain.imusic.databinding.AddPlaylistDialogBinding
 
 class PlaylistsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlaylistsBinding
-    lateinit var adapter: PlaylistsAdapter
+    private lateinit var adapter: PlaylistsAdapter
 
     companion object{
         var musicPlaylist: MusicPlaylist = MusicPlaylist()
@@ -34,7 +35,7 @@ class PlaylistsActivity : AppCompatActivity() {
         binding.playlistsAddBtn.setOnClickListener {customAlertDialog()}
     }
 
-    fun customAlertDialog(){
+    private fun customAlertDialog(){
         val customDialog = LayoutInflater.from(this).inflate(R.layout.add_playlist_dialog, binding.root, false)
         val binder = AddPlaylistDialogBinding.bind(customDialog)
         val builder = MaterialAlertDialogBuilder(this)
@@ -49,14 +50,17 @@ class PlaylistsActivity : AppCompatActivity() {
                        }
                    }
                    dialog.dismiss()
-            }.show()
+            }
+        val dialog = builder.create()
+        dialog.show()
+        dialog.window?.setBackgroundDrawableResource(R.color.grey)
     }
 
-     fun createPlaylist(playlistName: String) {
+     private fun createPlaylist(playlistName: String) {
          var playlistExists = false
 
          for (i in musicPlaylist.ref){
-             if (playlistName.equals(i.name)){
+             if (playlistName == i.name){
                  playlistExists = true
                  break
              }
@@ -69,9 +73,11 @@ class PlaylistsActivity : AppCompatActivity() {
              musicPlaylist.ref.add(tempPlayList)
              adapter.refreshPlalist()
          }
+    }
 
-
-
-
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onResume() {
+        super.onResume()
+        adapter.notifyDataSetChanged()
     }
 }
